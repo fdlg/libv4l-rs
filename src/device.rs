@@ -273,7 +273,7 @@ impl Device {
                         control.size = std::mem::size_of::<i64>() as u32;
                     }
                     control::Value::String(ref val) => {
-                        control.__bindgen_anon_1.string = val.as_ptr() as *mut std::os::raw::c_char;
+                        control.__bindgen_anon_1.string = val.as_ptr() as *mut _;
                         control.size = val.len() as u32;
                     }
                     control::Value::CompoundU8(ref val) => {
