@@ -6,6 +6,7 @@ use crate::io::arena::Arena as ArenaTrait;
 use crate::io::traits::{CaptureStream, Stream as StreamTrait};
 use crate::io::userptr::arena::Arena;
 use crate::memory::Memory;
+use crate::pselect::pselect;
 use crate::v4l2;
 use crate::v4l_sys::*;
 
@@ -136,6 +137,16 @@ impl<'a> CaptureStream<'a> for Stream {
 
     fn dequeue(&mut self) -> io::Result<usize> {
         let mut v4l2_buf: v4l2_buffer;
+
+        pselect(
+            self.handle.fd() + 1,
+            Some(&mut self.handle.fd_set()),
+            None,
+            None,
+            None,
+            None,
+        )?;
+
         unsafe {
             v4l2_buf = mem::zeroed();
             v4l2_buf.type_ = self.buf_type as u32;
